@@ -8,4 +8,6 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/markaboian/configsKhalaArte
+          uri: ${GIT_REPO_URL}
+          username: ${GIT_USERNAME}
+          password: ${GIT_PASSWORD}
