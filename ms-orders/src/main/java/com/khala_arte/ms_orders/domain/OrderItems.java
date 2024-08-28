@@ -1,5 +1,6 @@
 package com.khala_arte.ms_orders.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,17 +12,18 @@ import lombok.*;
 @ToString
 
 @Entity
-@Table(name = "Order_Items")
+@Table(name = "order_items")
 public class OrderItems {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private PurchasedOrder purchasedOrder;
+    @JoinColumn(name = "order_id", nullable = false)
+    @JsonBackReference
+    private CompleteOrder completeOrder;
 
-    private Long product_id;
+    private Long productId;
     private Integer quantity;
     private Double price;
 }

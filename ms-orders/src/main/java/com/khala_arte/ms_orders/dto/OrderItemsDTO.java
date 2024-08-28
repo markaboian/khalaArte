@@ -1,6 +1,5 @@
 package com.khala_arte.ms_orders.dto;
 
-import com.khala_arte.ms_orders.domain.PurchasedOrder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

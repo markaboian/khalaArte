@@ -1,9 +1,11 @@
 package com.khala_arte.ms_orders.service.implementations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.khala_arte.ms_orders.domain.CompleteOrder;
 import com.khala_arte.ms_orders.domain.OrderItems;
 import com.khala_arte.ms_orders.dto.OrderItemsDTO;
 import com.khala_arte.ms_orders.dto.product.ProductDTO;
+import com.khala_arte.ms_orders.repository.ICompleteOrderRepository;
 import com.khala_arte.ms_orders.repository.IOrderItemsRepository;
 import com.khala_arte.ms_orders.repository.feign.IProductRepository;
 import com.khala_arte.ms_orders.service.interfaces.IOrderItemsService;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class OrderItemsService implements IOrderItemsService {
 
     private final IOrderItemsRepository orderItemsRepository;
+    private final ICompleteOrderRepository completeOrderRepository;
     private final IProductRepository productRepository;
     private final ObjectMapper mapper;
 
@@ -29,10 +32,32 @@ public class OrderItemsService implements IOrderItemsService {
         if (product == null) {
             throw new RuntimeException("Product not found with id: " + orderItemDTO.getProductId());
         }
+
+        CompleteOrder completeOrder = completeOrderRepository.findById(orderItemDTO.getOrderId())
+                .orElseThrow(() -> new RuntimeException("Complete order not found with id: " + orderItemDTO.getOrderId()));
+
+
         OrderItems orderItem = mapper.convertValue(orderItemDTO, OrderItems.class);
+        orderItem.setPrice(product.getPrice());
+        orderItem.setCompleteOrder(completeOrder);
+
         orderItemsRepository.save(orderItem);
 
+        updateTotalAmount(completeOrder.getId());
         return mapper.convertValue(orderItem, OrderItemsDTO.class);
+    }
+
+    private void updateTotalAmount(Long completeOrderId) {
+        CompleteOrder completeOrder = completeOrderRepository.findById(completeOrderId)
+                .orElseThrow(() -> new RuntimeException("CompleteOrder not found"));
+
+        Double totalAmount = orderItemsRepository.findByCompleteOrderId(completeOrderId)
+                .stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+
+        completeOrder.setTotalAmount(totalAmount);
+        completeOrderRepository.save(completeOrder);
     }
 
     @Override

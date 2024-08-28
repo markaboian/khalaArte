@@ -64,4 +64,14 @@ public class OrderItemsController {
             return new ResponseEntity<>("Error while updating the order item. - " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteOrderItemById(@PathVariable Long id) {
+        try {
+            orderItemsService.deleteOrderItemById(id);
+            return new ResponseEntity<>("Order item with id of: " + id + " deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error while deletin the order item: - " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
