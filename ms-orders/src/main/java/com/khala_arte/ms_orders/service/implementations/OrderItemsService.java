@@ -44,7 +44,11 @@ public class OrderItemsService implements IOrderItemsService {
         orderItemsRepository.save(orderItem);
 
         updateTotalAmount(completeOrder.getId());
-        return mapper.convertValue(orderItem, OrderItemsDTO.class);
+
+        OrderItemsDTO responseDTO = mapper.convertValue(orderItem, OrderItemsDTO.class);
+        responseDTO.setOrderId(orderItem.getCompleteOrder().getId());
+
+        return responseDTO;
     }
 
     private void updateTotalAmount(Long completeOrderId) {
@@ -63,13 +67,21 @@ public class OrderItemsService implements IOrderItemsService {
     @Override
     public Optional<OrderItemsDTO> getOrderItemById(Long id) {
         return orderItemsRepository.findById(id)
-                .map(orderItem -> mapper.convertValue(orderItem, OrderItemsDTO.class));
+                .map(orderItem -> {
+                    OrderItemsDTO dto = mapper.convertValue(orderItem, OrderItemsDTO.class);
+                    dto.setOrderId(orderItem.getCompleteOrder().getId());
+                    return dto;
+                });
     }
 
     @Override
     public Set<OrderItemsDTO> getAllOrderItems() {
         return orderItemsRepository.findAll().stream().
-                map(orderItem -> mapper.convertValue(orderItem, OrderItemsDTO.class))
+                map(orderItem -> {
+                    OrderItemsDTO dto = mapper.convertValue(orderItem, OrderItemsDTO.class);
+                    dto.setOrderId(orderItem.getCompleteOrder().getId());
+                    return dto;
+                })
                 .collect(Collectors.toSet());
     }
 

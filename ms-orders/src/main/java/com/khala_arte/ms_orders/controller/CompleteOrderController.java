@@ -79,7 +79,7 @@ public class CompleteOrderController {
     @PutMapping("/update")
     public ResponseEntity<String> updateCompleteOrder(@RequestBody CompleteOrderDTO completeOrderDTO) {
         try {
-            CompleteOrderDTO updatedCompleteOrder = completeOrderService.addCompleteOrder(completeOrderDTO);
+            CompleteOrderDTO updatedCompleteOrder = completeOrderService.updateCompleteOrder(completeOrderDTO);
             return new ResponseEntity<>("Complete order updated successfully created: " + updatedCompleteOrder, HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>("Error while updating the complete order: - " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

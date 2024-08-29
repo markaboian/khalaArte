@@ -26,6 +26,5 @@ public class CompleteOrderDTO {
     private Integer telephone;
     private Integer zipCode;
 
-    @JsonIgnore
     private Set<OrderItemsDTO> orderItems;
 }

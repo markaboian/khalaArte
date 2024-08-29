@@ -3,8 +3,10 @@ package com.khala_arte.ms_orders.service.implementations;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khala_arte.ms_orders.domain.CompleteOrder;
 import com.khala_arte.ms_orders.dto.CompleteOrderDTO;
+import com.khala_arte.ms_orders.dto.OrderItemsDTO;
 import com.khala_arte.ms_orders.dto.user.UserDTO;
 import com.khala_arte.ms_orders.repository.ICompleteOrderRepository;
+import com.khala_arte.ms_orders.repository.IOrderItemsRepository;
 import com.khala_arte.ms_orders.repository.feign.IUserRepository;
 import com.khala_arte.ms_orders.service.interfaces.ICompleteOrderService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class CompleteOrderService implements ICompleteOrderService {
 
     private final ICompleteOrderRepository completeOrderRepository;
+    private final IOrderItemsRepository orderItemsRepository;
     private final IUserRepository userRepository;
     private final ObjectMapper mapper;
 
@@ -65,8 +68,14 @@ public class CompleteOrderService implements ICompleteOrderService {
 
     @Override
     public Set<CompleteOrderDTO> getAllCompleteOrders() {
-        return completeOrderRepository.findAll()
-                .stream().map(completeOrder -> mapper.convertValue(completeOrder, CompleteOrderDTO.class))
+        return completeOrderRepository.findAll().stream()
+                .map(completeOrder -> {
+                    CompleteOrderDTO dto = mapper.convertValue(completeOrder, CompleteOrderDTO.class);
+                    dto.setOrderItems(orderItemsRepository.findByCompleteOrderId(completeOrder.getId()).stream()
+                            .map(orderItem -> mapper.convertValue(orderItem, OrderItemsDTO.class))
+                            .collect(Collectors.toSet()));
+                    return dto;
+                })
                 .collect(Collectors.toSet());
     }
 
