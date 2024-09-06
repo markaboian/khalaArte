@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,26 +26,7 @@ public class CompleteOrderController {
             response = new ResponseEntity<>(completeOrderDTO, HttpStatus.OK);
         }
         else {
-            response = new ResponseEntity<>("Complete order with id of: " + id + " not found.", HttpStatus.NOT_FOUND);
-        }
-        return response;
-    }
-
-    @GetMapping("/getCompleteOrderByOrderDate/{orderDate}")
-    public ResponseEntity<?> getCompleteOrderByOrderDate(@PathVariable Date orderDate) {
-        return new ResponseEntity<>("", HttpStatus.OK);
-    }
-
-    @GetMapping("/getCompleteOrderByUserId/{userId}")
-    public ResponseEntity<?> getCompleteOrderByUserId(@PathVariable Long userId) {
-        ResponseEntity<?> response = null;
-        List<CompleteOrderDTO> completeOrderList = completeOrderService.getCompleteOrderByUserId(userId);
-
-        if (completeOrderList.isEmpty()) {
-            response = new ResponseEntity<>("The user with id of: " + userId + " does not have orders.", HttpStatus.NO_CONTENT);
-        }
-        else {
-            response = new ResponseEntity<>(completeOrderList, HttpStatus.OK);
+            response = new ResponseEntity<>("Complete order with the id of: " + id + " not found.", HttpStatus.NOT_FOUND);
         }
         return response;
     }
@@ -55,13 +34,13 @@ public class CompleteOrderController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllCompleteOrders() {
         ResponseEntity<?> response = null;
-        Set<CompleteOrderDTO> completeOrderSet = completeOrderService.getAllCompleteOrders();
+        Set<CompleteOrderDTO> completeOrderDTOS = completeOrderService.getAllCompleteOrders();
 
-        if (completeOrderSet.isEmpty()) {
-            response = new ResponseEntity<>("No orders found", HttpStatus.NO_CONTENT);
+        if (completeOrderDTOS.isEmpty()) {
+            response = new ResponseEntity<>("No complete orders found", HttpStatus.NO_CONTENT);
         }
         else {
-            response = new ResponseEntity<>(completeOrderSet, HttpStatus.OK);
+            response = new ResponseEntity<>(completeOrderDTOS, HttpStatus.OK);
         }
         return response;
     }
@@ -69,20 +48,20 @@ public class CompleteOrderController {
     @PostMapping("/add")
     public ResponseEntity<String> addCompleteOrder(@RequestBody CompleteOrderDTO completeOrderDTO) {
         try {
-            CompleteOrderDTO newCompleteOrder = completeOrderService.addCompleteOrder(completeOrderDTO);
-            return new ResponseEntity<>("Complete order created successfully created: " + newCompleteOrder, HttpStatus.CREATED);
+            CompleteOrderDTO newCompleteOrderDTO = completeOrderService.addCompleteOrder(completeOrderDTO);
+            return new ResponseEntity<>("Complete order created successfully. - " + newCompleteOrderDTO, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error while creating a new complete order: - " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error while creating a complete order: - " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/update")
     public ResponseEntity<String> updateCompleteOrder(@RequestBody CompleteOrderDTO completeOrderDTO) {
         try {
-            CompleteOrderDTO updatedCompleteOrder = completeOrderService.updateCompleteOrder(completeOrderDTO);
-            return new ResponseEntity<>("Complete order updated successfully created: " + updatedCompleteOrder, HttpStatus.ACCEPTED);
+            CompleteOrderDTO updatedCompleteOrderDTO = completeOrderService.updateCompleteOrder(completeOrderDTO);
+            return new ResponseEntity<>("Complete order updated successfully. - " + updatedCompleteOrderDTO, HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error while updating the complete order: - " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error while updating the complete order. - " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -90,9 +69,9 @@ public class CompleteOrderController {
     public ResponseEntity<String> deleteCompleteOrderById(@PathVariable Long id) {
         try {
             completeOrderService.deleteCompleteOrderById(id);
-            return new ResponseEntity<>("Complete order with id of: " + id + " deleted successfully.", HttpStatus.OK);
+            return new ResponseEntity<>("Complete order with the id of: " + id + " deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error while deleting the complete order: - " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error while deleting the complete order. - " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

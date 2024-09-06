@@ -12,18 +12,17 @@ import lombok.*;
 @ToString
 
 @Entity
-@Table(name = "order_items")
-public class OrderItems {
+@Table(name = "order_item")
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "orderId", nullable = false)
     @JsonBackReference
     private CompleteOrder completeOrder;
 
     private Long productId;
-    private Integer quantity;
     private Double price;
 }
