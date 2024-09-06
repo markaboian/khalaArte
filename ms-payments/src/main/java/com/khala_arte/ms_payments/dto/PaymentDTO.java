@@ -1,12 +1,10 @@
 package com.khala_arte.ms_payments.dto;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @ToString
 @RequiredArgsConstructor
 
